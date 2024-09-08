@@ -1,0 +1,44 @@
+{
+    "projects": [
+        {
+            "id": 1,
+            "name": "Gomp",
+            "description": "I created this library to create reusable HTMX components with Go! This is how I made this blog :).",
+            "url": "https://github.com/billvamva/gomp",
+            "tags": {
+                "languages": "go, htmx",
+                "applications": "frontend"
+            }
+        },
+        {
+            "id": 2,
+            "name": "Gewh",
+            "description": "My very own message broker implementation with binary encoding. It consists of a request producer, a dispatcher and worker pools. I used it to provide my interpretation of the 1 billion row challenge using the Map Reduce paradigm, achieving more than a 99% time improvement over the brute force  method.",
+            "url": "https://github.com/billvamva/gewh",
+            "tags": {
+                "languages": "go",
+                "applications": "backend, concurrency"
+            }
+        },
+        {
+            "id": 3,
+            "name": "ATR with LiDAR mounted drone",
+            "description": "My Masters dissertation project. It involves novel research around Automatic Target Recognition using a LiDAR mounted drone. Created a fully functional Data Processing pipeline, which involved encoding 3D point cloud data into 2D, performing schene segmentation using a CNN, extracting spatial and geometrical data and then utilising a reinforcement learning algorithm to adjust the trajectory of the drone.",
+            "url": "https://github.com/billvamva/point-cloud-classification",
+            "tags": {
+                "languages": "python, matlab",
+                "applications": "computer-vision"
+            }
+        },
+        {
+            "id": 4,
+            "name": "CCBox",
+            "description": "My own implementation of a POSIX filesystem on the cloud. Used my cloud platform engineering experience to create a google drive like application for my own files.",
+            "url": "https://github.com/billvamva/ccbox",
+            "tags": {
+                "languages": "python,  azure-cli",
+                "applications": "cloud-storage"
+            }
+        }
+    ]
+}
