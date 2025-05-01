@@ -11,7 +11,7 @@ func main() {
 	router.LoadHTMLGlob("internal/templates/*")
 
 	// Serve static files
-	router.Static("/static", "web/static")
+	router.Static("/static", "./static")
 
 	// Mount Handlers
 	handlers.MountHomeHandler(router)

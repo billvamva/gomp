@@ -17,8 +17,8 @@ func (m *MockComponent) Render(buf *bytes.Buffer) error {
 	return err
 }
 
-func TestNewProjectCard(t *testing.T) {
-	card := NewProjectCard("Test Title", "Test Description", "test-class")
+func TestNewCard(t *testing.T) {
+	card := NewCard("Test Title", "Test Description", "test-class", "")
 
 	if card.Title != "Test Title" {
 		t.Errorf("Expected Title to be 'Test Title', got '%s'", card.Title)
@@ -35,7 +35,7 @@ func TestNewProjectCard(t *testing.T) {
 }
 
 func TestAddComponent(t *testing.T) {
-	card := NewProjectCard("Test", "Test", "test")
+	card := NewCard("Test", "Test", "test", "")
 	mockComponent := &MockComponent{Content: "Mock Content"}
 
 	card.AddComponent(mockComponent)
@@ -53,13 +53,13 @@ func TestRender(t *testing.T) {
 	}{
 		{
 			name:     "Basic card",
-			card:     NewProjectCard("Test Title", "Test Description", "test-class"),
+			card:     NewCard("Test Title", "Test Description", "test-class", ""),
 			expected: `<div class=test-class><h3>Test Title</h3><p>Test Description</p></div>`,
 		},
 		{
 			name: "Card with component",
 			card: func() *Card {
-				c := NewProjectCard("With Component", "Has a mock component", "component-class")
+				c := NewCard("With Component", "Has a mock component", "component-class", "")
 				c.AddComponent(&MockComponent{Content: "<span>Mock Component</span>"})
 				return c
 			}(),
@@ -68,7 +68,7 @@ func TestRender(t *testing.T) {
 		{
 			name: "Card with multiple components",
 			card: func() *Card {
-				c := NewProjectCard("Multiple", "Multiple components", "multi-class")
+				c := NewCard("Multiple", "Multiple components", "multi-class", "")
 				c.AddComponent(&MockComponent{Content: "<span>First</span>"})
 				c.AddComponent(&MockComponent{Content: "<span>Second</span>"})
 				return c

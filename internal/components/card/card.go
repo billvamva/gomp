@@ -12,6 +12,7 @@ type Card struct {
 	Title       string
 	Description string
 	Class       string
+	Image       string
 	Components  []components.Component
 }
 
@@ -23,11 +24,21 @@ const cardTemplate = `
 </div>
 `
 
-func NewProjectCard(title, description, class string) *Card {
+const cardWithImageTemplate = `
+<div class={{.Class}}>
+	<h3>{{.Title}}</h3>
+	<img src={{.Image}}>
+	<p>{{.Description}}</p>
+	{{.ComponentsHTML}}
+</div>
+`
+
+func NewCard(title, description, class, img string) *Card {
 	return &Card{
 		Title:       title,
 		Description: description,
 		Class:       class,
+		Image:       img,
 	}
 }
 
@@ -50,6 +61,11 @@ func (c *Card) Render(buf *bytes.Buffer) error {
 		ComponentsHTML: template.HTML(componentsBuffer.String()),
 	}
 
-	tmpl := template.Must(template.New("card").Parse(cardTemplate))
+	var tmpl *template.Template
+	if c.Image == "" {
+		tmpl = template.Must(template.New("card").Parse(cardTemplate))
+	} else {
+		tmpl = template.Must(template.New("card").Parse(cardWithImageTemplate))
+	}
 	return tmpl.Execute(buf, data)
 }

@@ -8,12 +8,13 @@ import (
 	"github.com/billvamva/gomp/database"
 	"github.com/billvamva/gomp/internal/components/card"
 	"github.com/billvamva/gomp/internal/components/header"
+	"github.com/billvamva/gomp/internal/components/socials"
 	"github.com/billvamva/gomp/internal/components/text"
 	"github.com/gin-gonic/gin"
 )
 
 func HandleMain(c *gin.Context) {
-	var headerHTML, aboutHTML, projectsHTML string
+	var headerHTML, aboutHTML, socialHTML, projectsHTML string
 	var err error
 
 	// Create header
@@ -30,6 +31,13 @@ func HandleMain(c *gin.Context) {
 		return
 	}
 
+	// Create about section
+	socialHTML, err = renderSocialsSection()
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.tmpl", gin.H{"error": "Error rendering socials section"})
+		return
+	}
+
 	// Create projects section
 	projectsHTML, err = renderProjectsSection()
 	if err != nil {
@@ -41,6 +49,7 @@ func HandleMain(c *gin.Context) {
         <section id="about">
             <h2>About Me</h2>
             ` + aboutHTML + `
+            ` + socialHTML + `
         </section>
         <section id="projects">
             <h2>My Projects</h2>
@@ -60,6 +69,7 @@ func renderHeader() (string, error) {
 	h := header.NewHeader("Vasileios Vamvakas", []struct{ Text, Url string }{
 		{"About Me", "#about"},
 		{"Projects", "#projects"},
+		{"DevBlog", "#devblog"},
 	})
 	var headerBuf bytes.Buffer
 	err := h.Render(&headerBuf)
@@ -84,6 +94,20 @@ func renderAboutSection() (string, error) {
 	return aboutBuf.String(), nil
 }
 
+func renderSocialsSection() (string, error) {
+	socialLinks := []socials.SocialLink{
+		{Name: "LinkedIn", URL: "https://www.linkedin.com/in/vasileios-vamvakas-1832b8194/"},
+		{Name: "GitHub", URL: "https://github.com/billvamva"},
+	}
+	socialsComponent := socials.NewSocialMedia(socialLinks)
+	var socialsBuf bytes.Buffer
+	err := socialsComponent.Render(&socialsBuf)
+	if err != nil {
+		return "", err
+	}
+	return socialsBuf.String(), nil
+}
+
 func renderProjectsSection() (string, error) {
 	projects, err := database.GetProjects()
 	if err != nil {
@@ -92,7 +116,7 @@ func renderProjectsSection() (string, error) {
 
 	var projectsHTML string
 	for _, project := range projects {
-		projectCard := card.NewProjectCard(project.Name, project.Description, "card")
+		projectCard := card.NewCard(project.Name, project.Description, "card", "")
 		for key, value := range project.Tags {
 			tagText := text.NewText(key + ": " + value).WithTag("span")
 			projectCard.AddComponent(tagText)

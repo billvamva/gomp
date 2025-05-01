@@ -66,10 +66,10 @@ func NewCounter(initCount int, countText *text.Text, header *header.Header, incr
 func (c *Counter) updateCards() {
 	c.Cards = make([]template.HTML, c.Count)
 	for i := 0; i < c.Count; i++ {
-		cardComponent := card.NewProjectCard(
+		cardComponent := card.NewCard(
 			fmt.Sprintf("Card %d", i+1),
 			"This is a simple card",
-			"simple-card",
+			"simple-card", "",
 		)
 		cardBuf := new(bytes.Buffer)
 		cardComponent.Render(cardBuf)
