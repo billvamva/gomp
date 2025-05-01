@@ -38,6 +38,7 @@ func main() {
 	// Serve static files
 	r.Static("/static", "web/static")
 	r.GET("/", handlers.HandleMain)
+	r.GET("/post/:id", handlers.HandlePost)
 
 	r.Run(":8080")
 	pool.Close()

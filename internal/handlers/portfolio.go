@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -14,32 +15,37 @@ import (
 )
 
 func HandleMain(c *gin.Context) {
-	var headerHTML, aboutHTML, socialHTML, projectsHTML string
 	var err error
 
 	// Create header
-	headerHTML, err = renderHeader()
+	headerHTML, err := renderHeader()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.tmpl", gin.H{"error": "Error rendering header"})
 		return
 	}
 
 	// Create about section
-	aboutHTML, err = renderAboutSection()
+	aboutHTML, err := renderAboutSection()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.tmpl", gin.H{"error": "Error rendering about section"})
 		return
 	}
 
 	// Create about section
-	socialHTML, err = renderSocialsSection()
+	socialHTML, err := renderSocialsSection()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.tmpl", gin.H{"error": "Error rendering socials section"})
 		return
 	}
 
 	// Create projects section
-	projectsHTML, err = renderProjectsSection()
+	projectsHTML, err := renderProjectsSection()
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.tmpl", gin.H{"error": "Error rendering projects section"})
+		return
+	}
+
+	blogHTML, err := renderBlogSection()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.tmpl", gin.H{"error": "Error rendering projects section"})
 		return
@@ -55,6 +61,12 @@ func HandleMain(c *gin.Context) {
             <h2>My Projects</h2>
             <div class="cards-container">
                 ` + projectsHTML + `
+            </div>
+        </section>
+        <section id="devblog">
+            <h2>DevBlog</h2>
+            <div class="cards-container">
+                ` + blogHTML + `
             </div>
         </section>
     `)
@@ -133,4 +145,37 @@ func renderProjectsSection() (string, error) {
 	}
 
 	return projectsHTML, nil
+}
+
+func renderBlogSection() (string, error) {
+	posts := []struct {
+		id          uint64
+		imageurl    string
+		title       string
+		description string
+	}{
+		{
+			id:          1,
+			imageurl:    "/static/firstpost.jpg",
+			title:       "first blog post",
+			description: "This is my first blog post",
+		},
+	}
+
+	var blogHTML string
+	for _, post := range posts {
+		projectCard := card.NewCard(post.title, post.description, "card", post.imageurl)
+		path := fmt.Sprintf("/post/%d", post.id)
+		urlText := text.NewText("View Blog").WithTag("a").WithAttribute("href", path).WithAttribute("target", "_blank")
+		projectCard.AddComponent(urlText)
+
+		var cardBuf bytes.Buffer
+		err := projectCard.Render(&cardBuf)
+		if err != nil {
+			return "", err
+		}
+		blogHTML += cardBuf.String()
+	}
+
+	return blogHTML, nil
 }
